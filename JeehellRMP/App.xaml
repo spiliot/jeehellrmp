@@ -4,6 +4,55 @@
              xmlns:local="clr-namespace:JeehellRMP"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}" x:Key="RmpButtonText">
+            <Setter Property="Canvas.Top" Value="5.5"/>
+            <Setter Property="Width" Value="13.5"/>
+            <Setter Property="FontSize" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="{x:Type Rectangle}" x:Key="RmpButton">
+            <Setter Property="Canvas.Top" Value="4"/>
+            <Setter Property="Width" Value="13.5"/>
+            <Setter Property="Height" Value="9"/>
+            <Setter Property="Fill" Value="Black"/>
+            <Setter Property="RadiusX" Value="1"/>
+            <Setter Property="RadiusY" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="{x:Type Path}" x:Key="RmpButtonIndicator">
+            <Setter Property="Fill" Value="Black"/>
+            <Setter Property="Canvas.Left" Value="4.25"/>
+            <Setter Property="Data" Value="M0,0 L5,0 L2.5,2.5 Z"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" Value="True">
+                    <Setter Property="Fill" Value="GreenYellow" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}" x:Key="SelIndicator">
+            <Setter Property="Canvas.Top" Value="5.5"/>
+            <Setter Property="Width" Value="13.5"/>
+            <Setter Property="FontSize" Value="4"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" Value="True">
+                    <Setter Property="Foreground" Value="Orange" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}" x:Key="FreqWindowText">
+            <Setter Property="Canvas.Top" Value="10"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="14"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="Yellow"/>
+            <Setter Property="FontFamily" Value="Courier New"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Padding" Value="0,2,0,0"/>
+        </Style>
     </Application.Resources>
 </Application>

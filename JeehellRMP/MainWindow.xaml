@@ -5,8 +5,114 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JeehellRMP"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="Jeehell RMP" Height="330" Width="518" Background="#FF576975">
+    <Window.Resources>
+        <local:RmpData x:Key="RmpSimData"/>
+    </Window.Resources>
+    <Viewbox>
+        <Canvas Height="87" Width="150" Background="#FF576975" DataContext="{Binding Source={StaticResource RmpSimData}}">
+            <!--Frequency window markings-->
+            <TextBlock Canvas.Left="15" Canvas.Top="1" Width="50" FontSize="5">ACTIVE</TextBlock>
+            <TextBlock Canvas.Left="85" Canvas.Top="1" Width="50" FontSize="5">STBY/CRS</TextBlock>
+            <!--STBY NAV markings-->
+            <Path Data="M15,66.5 L55,66.5" Stroke="White" StrokeEndLineCap="Round" StrokeStartLineCap="Round"/>
+            <Path Data="M85,66.5 L118,66.5 L118,70" Stroke="White" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeLineJoin="Round"/>
+            <TextBlock Canvas.Left="59" Canvas.Top="63" FontSize="5">STBY NAV</TextBlock>
+            <!--On/OFF switch markings-->
+            <TextBlock Canvas.Left="127" Canvas.Top="63" Width="10" FontSize="5" Cursor="Hand">ON</TextBlock>
+            <TextBlock Canvas.Left="127" Canvas.Top="78" Width="10" FontSize="5" Cursor="Hand">OFF</TextBlock>
+            <Ellipse Width="8" Height="8" Canvas.Left="128" Canvas.Top="70" Stroke="White"/>
+            <Ellipse Width="6" Height="6" Canvas.Left="129" Canvas.Top="71" Fill="Black"/>
+
+            <!--Active UI elements-->
+            <TextBlock Canvas.Left="15" Style="{DynamicResource FreqWindowText}" Text="{Binding Path=ActiveFreq}" />
+            <TextBlock Canvas.Left="85" Style="{DynamicResource FreqWindowText}" Text="{Binding Path=StandbyFreq}"/>
+            
+            <Canvas Name="buttonTransfer" Canvas.Top="13" Canvas.Left="68" Cursor="Hand" MouseLeftButtonDown="buttonTransfer_MouseLeftButtonDown">
+                <Rectangle Width="13.5" Height="9" Fill="Black" RadiusX="1" RadiusY="1"/>
+                <Path Canvas.Top="2.5" Canvas.Left="1.75" Data="M0,2 L3,0 L3,4 L0,2 L10,2 L7,0 L7,4 L10,2" Fill="GreenYellow" StrokeLineJoin="Round" StrokeMiterLimit="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Stroke="GreenYellow"/>
+                <Path Canvas.Top="2.5" Canvas.Left="1.75" Data="M3,2 L7,2" Stroke="GreenYellow" StrokeThickness="2"/>
+            </Canvas>
+            
+            <Canvas Name="buttonVHF1" Canvas.Top="31" Canvas.Left="16">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedVhf1Set}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">VHF1</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonVHF2" Canvas.Top="31" Canvas.Left="33">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedVhf2Set}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">VHF2</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonVHF3" Canvas.Top="31" Canvas.Left="50.5">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedVhf3Set}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">VHF3</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonHF1" Canvas.Top="46" Canvas.Left="16">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedHf1Set}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">HF1</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="indicatorSEL" Canvas.Top="46" Canvas.Left="33">
+                <Ellipse Canvas.Top="4" Canvas.Left="2" Width="9" Height="9" Fill="Black"/>
+                <TextBlock Style="{DynamicResource SelIndicator}"  DataContext="{Binding Path=LedSelSet}">SEL</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonHF2" Canvas.Top="46" Canvas.Left="50.5">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedHf2Set}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">HF2</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonAM" Canvas.Top="46" Canvas.Left="68">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedAmSet}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">AM</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonNAV" Canvas.Top="70" Canvas.Left="16">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedNavSet}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">NAV</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonVOR" Canvas.Top="70" Canvas.Left="33">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedVorSet}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">VOR</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonILS" Canvas.Top="70" Canvas.Left="50.5">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedIlsSet}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">ILS</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonMLS" Canvas.Top="70" Canvas.Left="68">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedMlsSet}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">MLS</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonBFO" Canvas.Top="70" Canvas.Left="85.5">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedBfoSet}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">BFO</TextBlock>
+            </Canvas>
+            
+            <Canvas Name="buttonADF" Canvas.Top="70" Canvas.Left="103">
+                <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedAdfSet}"/>
+                <Rectangle Style="{DynamicResource RmpButton}"/>
+                <TextBlock Style="{DynamicResource RmpButtonText}">ADF</TextBlock>
+            </Canvas>
+
+            <Ellipse Name="OuterKnob" Width="25" Height="25" Canvas.Left="92" Canvas.Top="34" StrokeThickness="0" Fill="WhiteSmoke" Cursor="Hand" MouseDown="Knob_MouseDown"/>
+            <Ellipse Name="InnerKnob" Width="17" Height="17" Canvas.Left="96" Canvas.Top="38" Stroke="Gray" Fill="White" Cursor="Hand" MouseDown="Knob_MouseDown"/>
+        </Canvas>
+    </Viewbox>
 </Window>
