@@ -25,6 +25,15 @@ namespace JeehellRMP
             return instance;
         }
 
+        public static bool isConnectedToFs
+        {
+            get
+            {
+                SimConnect simconnect = GetInstance().simconnect;
+                return simconnect != null;
+            }
+        }
+
         public string Com1ActiveFreq
         {
             get
@@ -55,7 +64,7 @@ namespace JeehellRMP
 
         private void AttemptFsConnection_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (simconnect == null)
+            while (isConnectedToFs == false)
             {
                 if (ConnectToFs() == false) Thread.Sleep(1000);
             }
@@ -114,8 +123,9 @@ namespace JeehellRMP
         /// </summary>
         internal static void ReceiveMessage()
         {
+            if (isConnectedToFs == false) return;
+
             SimConnect simconnect = SimData.GetInstance().simconnect;
-            if (simconnect == null) return;
             simconnect.ReceiveMessage();
         }
 
@@ -228,9 +238,9 @@ namespace JeehellRMP
 
         internal static void TransferKeyPressed()
         {
-            SimConnect simconnect = SimData.GetInstance().simconnect;
-            if (simconnect == null) return;
+            if (isConnectedToFs == false) return;
 
+            SimConnect simconnect = SimData.GetInstance().simconnect;
             simconnect.TransmitClientEvent(0, Event.COM_RADIO_SWAP, 0, NotificationGroup.Default, SIMCONNECT_EVENT_FLAG.DEFAULT);
         }
 
@@ -241,9 +251,9 @@ namespace JeehellRMP
         /// <param name="knobDirection">The direction of the knob</param>
         internal static void KnobTurned(Knob knob, KnobDirection knobDirection)
         {
-            SimConnect simconnect = SimData.GetInstance().simconnect;
-            if (simconnect == null) return;
+            if (isConnectedToFs == false) return;
 
+            SimConnect simconnect = SimData.GetInstance().simconnect;
             Event eventToTransmit;
 
             switch (knob)
