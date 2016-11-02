@@ -1,7 +1,7 @@
 ﻿#Jeehell RMP
 ##A virtual Radio Management Panel for Jeehell FMGS
 
-![Jeehell RMP Photo](http://i64.tinypic.com/35bf3va.png)
+![Jeehell RMP Photo](http://oi63.tinypic.com/52me6f.jpg)
 
 ###Introduction
 
