@@ -159,7 +159,7 @@ namespace JeehellRMP
             {
                 //TODO: An exception is firing almost every time FS is closed. My guess is that a message is sent when simconnect discovers
                 //it is going away but by the we process it, it is already gone, causing a method call on a non existent object.
-                //TODO: The exception handler can probably be moved into the SimData class
+                //This should better be handled than be allowed to raise an exception that we eventually catch and hide away
                 Debug.WriteLine("MainWindow:COMException {0}:{1}", ex.ErrorCode, ex.Message);
             }
         }
