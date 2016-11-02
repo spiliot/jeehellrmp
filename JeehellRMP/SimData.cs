@@ -57,9 +57,7 @@ namespace JeehellRMP
         {
             while (simconnect == null)
             {
-                ConnectToFs();
-                //Wait a second but only if it failed
-                if (simconnect == null) Thread.Sleep(1000);
+                if (ConnectToFs() == false) Thread.Sleep(1000);
             }
         }
 
