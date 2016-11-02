@@ -202,11 +202,6 @@ namespace JeehellRMP
             OnActiveModeChanged();
         }
 
-        private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            System.Windows.MessageBox.Show(sender.ToString());
-        }
-
         private void Simdata_ConnectedToFs(string FlightSimulatorName)
         {
             LedSelSet = false;
@@ -231,21 +226,10 @@ namespace JeehellRMP
             }
         }
 
-        private void Test_DoWork(object sender, DoWorkEventArgs e)
-        {
-            LedSelSet = true;
-            System.Threading.Thread.Sleep(2000);
-            ActiveFreq = "122.800";
-            StandbyFreq = "132.975";
-            LedVhf1Set = true;
-            LedSelSet = false;
-        }
-
         private void InitializeVariables()
         {
             ActiveFreq = "---.---";
             StandbyFreq = "---.---";
-            LedVhf1Set = false;
             LedSelSet = true;
         }
 
