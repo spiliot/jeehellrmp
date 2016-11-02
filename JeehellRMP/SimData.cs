@@ -15,6 +15,7 @@ namespace JeehellRMP
     {
         public event EventHandler DataUpdated;
         public event Action<string> ConnectedToFs;
+        public event Action DisconnectedFromFs;
 
         public static SimData GetInstance()
         {
@@ -77,6 +78,8 @@ namespace JeehellRMP
             AttemptFsConnection.DoWork += AttemptFsConnection_DoWork;
             AttemptFsConnection.RunWorkerAsync();
             RmpData.ActiveModeChanged += RmpData_ActiveModeChanged;
+
+            OnDisconnectedFromFs();
         }
 
         private void RmpData_ActiveModeChanged(RmpData.RmpMode obj)
@@ -157,9 +160,9 @@ namespace JeehellRMP
             }
             catch (COMException ex)
             {
-                //TODO: An exception is firing almost every time FS is closed. My guess is that a message is sent when simconnect discovers
-                //it is going away but by the we process it, it is already gone, causing a method call on a non existent object.
-                //This should better be handled than be allowed to raise an exception that we eventually catch and hide away
+                //If any exception happens here we can be pretty sure simconnect is gone so:
+                DisposeSimconnect();
+
                 Debug.WriteLine("MainWindow:COMException {0}:{1}", ex.ErrorCode, ex.Message);
             }
         }
@@ -180,13 +183,14 @@ namespace JeehellRMP
             });
 
             if (mainWindowHandle == IntPtr.Zero) return false;
-
+            
             try
             {
-                simconnect = new SimConnect("AimForFS", mainWindowHandle, WM_USER_SIMCONNECT, null, 0);
+                simconnect = new SimConnect("AimForFS", mainWindowHandle, WM_USER_SIMCONNECT, null, SimConnect.SIMCONNECT_OPEN_CONFIGINDEX_LOCAL);
 
                 simconnect.OnRecvOpen += Simconnect_OnRecvOpen;
                 simconnect.OnRecvSimobjectData += Simconnect_OnRecvSimobjectData;
+                simconnect.OnRecvQuit += Simconnect_OnRecvQuit;
                 SimConnectSetup();
                 return true;
             }
@@ -198,6 +202,19 @@ namespace JeehellRMP
                 }
             }
             return false;
+        }
+
+        private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
+        {
+            DisposeSimconnect();
+        }
+
+        private static void DisposeSimconnect()
+        {
+            SimData simdata = GetInstance();
+            simdata.simconnect.Dispose();
+            simdata.simconnect = null;
+            simdata.OnDisconnectedFromFs();
         }
 
         private void SimConnectSetup()
@@ -347,6 +364,13 @@ namespace JeehellRMP
             if (ConnectedToFs == null) return;
 
             ConnectedToFs(FlightSimulatorName);
+        }
+
+        private void OnDisconnectedFromFs()
+        {
+            if (DisconnectedFromFs == null) return;
+
+            DisconnectedFromFs();
         }
     }
 }
