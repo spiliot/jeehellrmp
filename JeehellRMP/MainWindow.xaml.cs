@@ -86,5 +86,21 @@ namespace JeehellRMP
 
             SimData.KnobTurned(knobTurned, knobTurnDirection);
         }
+
+        private void button_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Canvas buttonPressed = sender as Canvas;
+            
+            switch (buttonPressed.Name)
+            {
+                case "buttonVHF1":
+                    RmpData.SetActiveMode(RmpData.RmpMode.VHF1);
+                    break;
+                case "buttonVHF2":
+                    RmpData.SetActiveMode(RmpData.RmpMode.VHF2);
+                    break;
+            }
+
+        }
     }
 }

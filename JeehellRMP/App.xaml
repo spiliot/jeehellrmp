@@ -14,6 +14,7 @@
             <Setter Property="FontSize" Value="4"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
+        <!-- <EventSetter Event="Click" Handler="b1SetColor"/> -->
         <Style TargetType="{x:Type Rectangle}" x:Key="RmpButton">
             <Setter Property="Canvas.Top" Value="4"/>
             <Setter Property="Width" Value="13.5"/>

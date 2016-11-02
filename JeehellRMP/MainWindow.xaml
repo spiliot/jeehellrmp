@@ -34,13 +34,13 @@
                 <Path Canvas.Top="2.5" Canvas.Left="1.75" Data="M3,2 L7,2" Stroke="GreenYellow" StrokeThickness="2"/>
             </Canvas>
             
-            <Canvas Name="buttonVHF1" Canvas.Top="31" Canvas.Left="16">
+            <Canvas Name="buttonVHF1" Canvas.Top="31" Canvas.Left="16" MouseDown="button_MouseDown">
                 <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedVhf1Set}"/>
                 <Rectangle Style="{DynamicResource RmpButton}"/>
                 <TextBlock Style="{DynamicResource RmpButtonText}">VHF1</TextBlock>
             </Canvas>
-            
-            <Canvas Name="buttonVHF2" Canvas.Top="31" Canvas.Left="33">
+
+            <Canvas Name="buttonVHF2" Canvas.Top="31" Canvas.Left="33" MouseDown="button_MouseDown">
                 <Path Style="{DynamicResource RmpButtonIndicator}" DataContext="{Binding Path=LedVhf2Set}"/>
                 <Rectangle Style="{DynamicResource RmpButton}"/>
                 <TextBlock Style="{DynamicResource RmpButtonText}">VHF2</TextBlock>

@@ -10,6 +10,7 @@ namespace JeehellRMP
     class RmpData : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public static event Action<RmpMode> ActiveModeChanged;
 
         public string ActiveFreq
         {
@@ -187,6 +188,20 @@ namespace JeehellRMP
             InitializeVariables();
         }
 
+        internal enum RmpMode
+        {
+            VHF1,
+            VHF2
+        }
+
+        internal static RmpMode ActiveMode = RmpMode.VHF1;
+
+        internal static void SetActiveMode(RmpMode modeToSet)
+        {
+            ActiveMode = modeToSet;
+            OnActiveModeChanged();
+        }
+
         private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             System.Windows.MessageBox.Show(sender.ToString());
@@ -199,9 +214,21 @@ namespace JeehellRMP
 
         private void Simdata_DataUpdated(object sender, EventArgs e)
         {
-            ActiveFreq = simdata.Com1ActiveFreq;
-            StandbyFreq = simdata.Com1StandbyFreq;
-            LedVhf1Set = true;
+            switch (ActiveMode)
+            {
+                case RmpMode.VHF1:
+                    ActiveFreq = simdata.Com1ActiveFreq;
+                    StandbyFreq = simdata.Com1StandbyFreq;
+                    LedVhf1Set = true;
+                    LedVhf2Set = false;
+                    break;
+                case RmpMode.VHF2:
+                    ActiveFreq = simdata.Com2ActiveFreq;
+                    StandbyFreq = simdata.Com2StandbyFreq;
+                    LedVhf1Set = false;
+                    LedVhf2Set = true;
+                    break;
+            }
         }
 
         private void Test_DoWork(object sender, DoWorkEventArgs e)
@@ -229,6 +256,13 @@ namespace JeehellRMP
             {
                 handler(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        private static void OnActiveModeChanged()
+        {
+            if (ActiveModeChanged == null) return;
+
+            ActiveModeChanged(ActiveMode);
         }
 
     }

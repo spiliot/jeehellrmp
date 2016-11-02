@@ -49,6 +49,22 @@ namespace JeehellRMP
             }
         }
 
+        public string Com2ActiveFreq
+        {
+            get
+            {
+                return FrequencyFromBcd(fsData.COM2_ACT_Frequency);
+            }
+        }
+
+        public string Com2StandbyFreq
+        {
+            get
+            {
+                return FrequencyFromBcd(fsData.COM2_STB_Frequency);
+            }
+        }
+
         private static SimData instance;
         private SimConnect simconnect;
         internal const int WM_USER_SIMCONNECT = 0x0402;
@@ -60,6 +76,12 @@ namespace JeehellRMP
             AttemptFsConnection = new BackgroundWorker();
             AttemptFsConnection.DoWork += AttemptFsConnection_DoWork;
             AttemptFsConnection.RunWorkerAsync();
+            RmpData.ActiveModeChanged += RmpData_ActiveModeChanged;
+        }
+
+        private void RmpData_ActiveModeChanged(RmpData.RmpMode obj)
+        {
+            OnDataUpdated();
         }
 
         private void AttemptFsConnection_DoWork(object sender, DoWorkEventArgs e)
@@ -87,6 +109,11 @@ namespace JeehellRMP
             COM_RADIO_WHOLE_INC,
             COM_RADIO_FRACT_DEC,
             COM_RADIO_FRACT_INC,
+            COM2_RADIO_SWAP,
+            COM2_RADIO_WHOLE_DEC,
+            COM2_RADIO_WHOLE_INC,
+            COM2_RADIO_FRACT_DEC,
+            COM2_RADIO_FRACT_INC,
         };
 
         private enum DataDefinition
@@ -99,6 +126,8 @@ namespace JeehellRMP
         {
             public double COM1_ACT_Frequency;
             public double COM1_STB_Frequency;
+            public double COM2_ACT_Frequency;
+            public double COM2_STB_Frequency;
         }
 
         public enum Knob
@@ -113,20 +142,26 @@ namespace JeehellRMP
         }
 
         /// <summary>
-        /// Signals internal SimConnect method to process data from FS
+        /// Signals the internal SimConnect method to process data from FS
         /// 
-        /// TODO: There doesn't seem to be a good way to attach an internal class to a XAML event so instead it is
-        /// made static to allow it to be easilly accessed from outside the class, without complicating things too much.
-        /// If a better mechanism is available this should be revised
-        /// 
-        /// Note: SimData is a singleton therefor simconnect is too.
+        /// Note: SimData is a singleton therefor simconnect is only created once as well too.
         /// </summary>
         internal static void ReceiveMessage()
         {
             if (isConnectedToFs == false) return;
-
             SimConnect simconnect = SimData.GetInstance().simconnect;
-            simconnect.ReceiveMessage();
+
+            try
+            {
+                simconnect.ReceiveMessage();
+            }
+            catch (COMException ex)
+            {
+                //TODO: An exception is firing almost every time FS is closed. My guess is that a message is sent when simconnect discovers
+                //it is going away but by the we process it, it is already gone, causing a method call on a non existent object.
+                //TODO: The exception handler can probably be moved into the SimData class
+                Debug.WriteLine("MainWindow:COMException {0}:{1}", ex.ErrorCode, ex.Message);
+            }
         }
 
         /// <summary>
@@ -174,12 +209,19 @@ namespace JeehellRMP
                 simconnect.MapClientEventToSimEvent(Event.COM_RADIO_FRACT_INC, "COM_RADIO_FRACT_INC");
                 simconnect.MapClientEventToSimEvent(Event.COM_RADIO_WHOLE_DEC, "COM_RADIO_WHOLE_DEC");
                 simconnect.MapClientEventToSimEvent(Event.COM_RADIO_WHOLE_INC, "COM_RADIO_WHOLE_INC");
+                simconnect.MapClientEventToSimEvent(Event.COM2_RADIO_SWAP, "COM2_RADIO_SWAP");
+                simconnect.MapClientEventToSimEvent(Event.COM2_RADIO_FRACT_DEC, "COM2_RADIO_FRACT_DEC");
+                simconnect.MapClientEventToSimEvent(Event.COM2_RADIO_FRACT_INC, "COM2_RADIO_FRACT_INC");
+                simconnect.MapClientEventToSimEvent(Event.COM2_RADIO_WHOLE_DEC, "COM2_RADIO_WHOLE_DEC");
+                simconnect.MapClientEventToSimEvent(Event.COM2_RADIO_WHOLE_INC, "COM2_RADIO_WHOLE_INC");
 
                 simconnect.AddClientEventToNotificationGroup(NotificationGroup.Default, Event.COM_RADIO_SWAP, false);
                 simconnect.SetNotificationGroupPriority(NotificationGroup.Default, SimConnect.SIMCONNECT_GROUP_PRIORITY_HIGHEST);
 
                 simconnect.AddToDataDefinition(DataDefinition.SimConnectDataStructure, "COM ACTIVE FREQUENCY:1", null, SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
                 simconnect.AddToDataDefinition(DataDefinition.SimConnectDataStructure, "COM STANDBY FREQUENCY:1", null, SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+                simconnect.AddToDataDefinition(DataDefinition.SimConnectDataStructure, "COM ACTIVE FREQUENCY:2", null, SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+                simconnect.AddToDataDefinition(DataDefinition.SimConnectDataStructure, "COM STANDBY FREQUENCY:2", null, SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
 
                 simconnect.RegisterDataDefineStruct<FstDataStructure>(DataDefinition.SimConnectDataStructure);
             }
@@ -240,8 +282,17 @@ namespace JeehellRMP
         {
             if (isConnectedToFs == false) return;
 
-            SimConnect simconnect = SimData.GetInstance().simconnect;
-            simconnect.TransmitClientEvent(0, Event.COM_RADIO_SWAP, 0, NotificationGroup.Default, SIMCONNECT_EVENT_FLAG.DEFAULT);
+            SimConnect simconnect = GetInstance().simconnect;
+
+            switch (RmpData.ActiveMode)
+            {
+                case RmpData.RmpMode.VHF1:
+                    simconnect.TransmitClientEvent(0, Event.COM_RADIO_SWAP, 0, NotificationGroup.Default, SIMCONNECT_EVENT_FLAG.DEFAULT);
+                    break;
+                case RmpData.RmpMode.VHF2:
+                    simconnect.TransmitClientEvent(0, Event.COM2_RADIO_SWAP, 0, NotificationGroup.Default, SIMCONNECT_EVENT_FLAG.DEFAULT);
+                    break;
+            }
         }
 
         /// <summary>
@@ -254,29 +305,31 @@ namespace JeehellRMP
             if (isConnectedToFs == false) return;
 
             SimConnect simconnect = SimData.GetInstance().simconnect;
-            Event eventToTransmit;
+
+            //Initializing to stupid default to keep the compiler from complaining variable might be used uninitialized.
+            Event eventToTransmit = Event.COM_RADIO_WHOLE_DEC;
 
             switch (knob)
             {
                 case Knob.InnerKnob:
                     if (knobDirection == KnobDirection.Clockwise)
                     {
-                        eventToTransmit = Event.COM_RADIO_FRACT_INC;
+                        if (RmpData.ActiveMode == RmpData.RmpMode.VHF1) eventToTransmit = Event.COM_RADIO_FRACT_INC;
+                        if (RmpData.ActiveMode == RmpData.RmpMode.VHF2) eventToTransmit = Event.COM2_RADIO_FRACT_INC;
                         break;
                     }
-                    eventToTransmit = Event.COM_RADIO_FRACT_DEC;
+                    if (RmpData.ActiveMode == RmpData.RmpMode.VHF1) eventToTransmit = Event.COM_RADIO_FRACT_DEC;
+                    if (RmpData.ActiveMode == RmpData.RmpMode.VHF2) eventToTransmit = Event.COM2_RADIO_FRACT_DEC;
                     break;
                 case Knob.OuterKnob:
                     if (knobDirection == KnobDirection.Clockwise)
                     {
-                        eventToTransmit = Event.COM_RADIO_WHOLE_INC;
+                        if (RmpData.ActiveMode == RmpData.RmpMode.VHF1) eventToTransmit = Event.COM_RADIO_WHOLE_INC;
+                        if (RmpData.ActiveMode == RmpData.RmpMode.VHF2) eventToTransmit = Event.COM2_RADIO_WHOLE_INC;
                         break;
                     }
-                    eventToTransmit = Event.COM_RADIO_WHOLE_DEC;
-                    break;
-                default:
-                    //Stupid default to keep the compiler from complaining eventToTransmit might be used uninitialized.
-                    eventToTransmit = Event.COM_RADIO_WHOLE_DEC;
+                    if (RmpData.ActiveMode == RmpData.RmpMode.VHF1) eventToTransmit = Event.COM_RADIO_WHOLE_DEC;
+                    if (RmpData.ActiveMode == RmpData.RmpMode.VHF2) eventToTransmit = Event.COM2_RADIO_WHOLE_DEC;
                     break;
             }
             simconnect.TransmitClientEvent(0, eventToTransmit, 0, NotificationGroup.Default, SIMCONNECT_EVENT_FLAG.DEFAULT);
