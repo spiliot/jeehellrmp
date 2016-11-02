@@ -111,8 +111,8 @@
                 <TextBlock Style="{DynamicResource RmpButtonText}">ADF</TextBlock>
             </Canvas>
 
-            <Ellipse Name="OuterKnob" Width="25" Height="25" Canvas.Left="92" Canvas.Top="34" StrokeThickness="0" Fill="WhiteSmoke" Cursor="Hand" MouseDown="Knob_MouseDown"/>
-            <Ellipse Name="InnerKnob" Width="17" Height="17" Canvas.Left="96" Canvas.Top="38" Stroke="Gray" Fill="White" Cursor="Hand" MouseDown="Knob_MouseDown"/>
+            <Ellipse Name="OuterKnob" Width="25" Height="25" Canvas.Left="92" Canvas.Top="34" StrokeThickness="0" Fill="WhiteSmoke" Cursor="Hand" MouseWheel="Knob_MouseWheel" MouseDown="Knob_MouseDown"/>
+            <Ellipse Name="InnerKnob" Width="17" Height="17" Canvas.Left="96" Canvas.Top="38" Stroke="Gray" Fill="White" Cursor="Hand" MouseWheel="Knob_MouseWheel" MouseDown="Knob_MouseDown"/>
         </Canvas>
     </Viewbox>
 </Window>

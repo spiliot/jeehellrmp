@@ -70,11 +70,21 @@ namespace JeehellRMP
 
         private void Knob_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var knob = sender as Ellipse;
-            SimData.Knob knobTurned = (knob.Name == "OuterKnob") ? SimData.Knob.OuterKnob : SimData.Knob.InnerKnob;
             SimData.KnobDirection knobTurnDirection = e.LeftButton.HasFlag(MouseButtonState.Pressed) ? SimData.KnobDirection.CounterClockWise : SimData.KnobDirection.Clockwise;
+            SimData.KnobTurned(DecideWhichKnob(sender as Ellipse), knobTurnDirection);
+        }
 
-            SimData.KnobTurned(knobTurned, knobTurnDirection);
+        private void Knob_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            SimData.KnobDirection knobTurnDirection = (e.Delta < 0) ? SimData.KnobDirection.CounterClockWise : SimData.KnobDirection.Clockwise;
+            SimData.KnobTurned(DecideWhichKnob(sender as Ellipse), knobTurnDirection);
+        }
+
+        private SimData.Knob DecideWhichKnob(Ellipse knob)
+        {
+            if (knob == null) return SimData.Knob.InnerKnob;
+
+            return (knob.Name == "OuterKnob") ? SimData.Knob.OuterKnob : SimData.Knob.InnerKnob;
         }
 
         private void button_MouseDown(object sender, MouseButtonEventArgs e)
