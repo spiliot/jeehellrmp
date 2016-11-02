@@ -185,7 +185,8 @@ namespace JeehellRMP
             simdata = SimData.GetInstance();
             simdata.DataUpdated += Simdata_DataUpdated;
             simdata.ConnectedToFs += Simdata_ConnectedToFs;
-            InitializeVariables();
+            simdata.DisconnectedFromFs += Simdata_DisconnectedFromFs;
+            Simdata_DisconnectedFromFs();
         }
 
         internal enum RmpMode
@@ -204,7 +205,15 @@ namespace JeehellRMP
 
         private void Simdata_ConnectedToFs(string FlightSimulatorName)
         {
-            LedSelSet = false;
+            SetAllLeds(false);
+        }
+
+        private void Simdata_DisconnectedFromFs()
+        {
+            ActiveFreq = "---.---";
+            StandbyFreq = "---.---";
+            SetAllLeds(false);
+            LedSelSet = true;
         }
 
         private void Simdata_DataUpdated(object sender, EventArgs e)
@@ -214,23 +223,33 @@ namespace JeehellRMP
                 case RmpMode.VHF1:
                     ActiveFreq = simdata.Com1ActiveFreq;
                     StandbyFreq = simdata.Com1StandbyFreq;
+                    SetAllLeds(false);
                     LedVhf1Set = true;
-                    LedVhf2Set = false;
                     break;
                 case RmpMode.VHF2:
                     ActiveFreq = simdata.Com2ActiveFreq;
                     StandbyFreq = simdata.Com2StandbyFreq;
-                    LedVhf1Set = false;
+                    SetAllLeds(false);
                     LedVhf2Set = true;
                     break;
             }
         }
 
-        private void InitializeVariables()
+        private void SetAllLeds(bool value)
         {
-            ActiveFreq = "---.---";
-            StandbyFreq = "---.---";
-            LedSelSet = true;
+            LedVhf1Set = value;
+            LedVhf2Set = value;
+            LedVhf3Set = value;
+            LedHf1Set = value;
+            LedHf2Set = value;
+            LedSelSet = value;
+            LedAmSet = value;
+            LedNavSet = value;
+            LedVorSet = value;
+            LedIlsSet = value;
+            LedMlsSet = value;
+            LedBfoSet = value;
+            LedAdfSet = value;
         }
 
         protected void OnPropertyChanged(string name)
