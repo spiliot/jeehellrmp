@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace JeehellRMP
 {
@@ -79,7 +81,61 @@ namespace JeehellRMP
             AttemptFsConnection.RunWorkerAsync();
             RmpData.ActiveModeChanged += RmpData_ActiveModeChanged;
 
+            HookSimconnect(Application.Current.MainWindow);
+
             OnDisconnectedFromFs();
+        }
+
+        /// <summary>
+        /// Figures out the correct way to hook simconnect messaging to a window
+        /// </summary>
+        /// <param name="window">Window to hook</param>
+        private void HookSimconnect(Window window)
+        {
+            if (window.IsLoaded)
+            {
+                attachMessageHook(window);
+                return;
+            }
+            window.Loaded += MainWindow_Loaded;
+        }
+
+        /// <summary>
+        /// Attaches the simconnect message hook to a window
+        /// </summary>
+        /// <param name="window">Window to attach the hook</param>
+        private void attachMessageHook(Window window)
+        {
+            var Window = new WindowInteropHelper(window);
+            HwndSource source = HwndSource.FromHwnd(Window.Handle);
+            source.AddHook(new HwndSourceHook(WndProc));
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            attachMessageHook(sender as Window);
+        }
+
+        /// <summary>
+        /// Handles Win32 Windows Messaging for communicating with SimConnect
+        /// 
+        /// To get data from SimConnect you either poll at fixed intervals (bad) or you use the "old" windows
+        /// messaging to let SimConnect signal you when it has something to say. To do this you need to pass the handle
+        /// of the window that will receive the messages when setting up a connection with simconnect and handle that 
+        /// reception in that window (traditionally by overriding DefWndProc).
+        /// 
+        /// WPF doesn't want anything to do with the Win32 past so all window messaging is gone. Fortunately 
+        /// class System.Windows.Interop is there to bring back these features.
+        /// 
+        /// TODO: Investigate if it is possible/worth it to create a (hidden) traditional W32 window and have that receive messages
+        /// </summary>
+        public IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WM_USER_SIMCONNECT)
+            {
+                ReceiveSimconnectMessage();
+            }
+            return IntPtr.Zero;
         }
 
         private void RmpData_ActiveModeChanged(RmpData.RmpMode obj)
@@ -149,7 +205,7 @@ namespace JeehellRMP
         /// 
         /// Note: SimData is a singleton therefor simconnect is only created once as well too.
         /// </summary>
-        internal static void ReceiveMessage()
+        internal static void ReceiveSimconnectMessage()
         {
             if (isConnectedToFs == false) return;
             SimConnect simconnect = SimData.GetInstance().simconnect;
@@ -170,18 +226,14 @@ namespace JeehellRMP
         /// <summary>
         /// Attempts a connection to FS and sets up events, handlers and data communication
         /// 
-        /// TODO: Fix the window messaging mess
+        /// Note: Attempts to get the handle to the current MainWindow, where a message hook needs to be setup for messages to arrive.
         /// </summary>
         /// <returns>True if it connects. If unsuccessfull simconnect is null.</returns>
         private bool ConnectToFs()
         {
             if (simconnect != null) return true;
 
-            IntPtr mainWindowHandle = IntPtr.Zero;
-            System.Windows.Application.Current.Dispatcher.Invoke(() => {
-                if (MainWindow.Window != null) mainWindowHandle = MainWindow.Window.Handle;
-            });
-
+            IntPtr mainWindowHandle = GetMainWindowHandle();
             if (mainWindowHandle == IntPtr.Zero) return false;
             
             try
@@ -204,6 +256,28 @@ namespace JeehellRMP
             return false;
         }
 
+        /// <summary>
+        /// Gets the MainWindow Handle
+        /// </summary>
+        /// <remarks>
+        /// Dispatcher is used because Application.Current.MainWindow only works in the same thread as MainWindow
+        /// (https://msdn.microsoft.com/en-us/library/system.windows.application.mainwindow(v=vs.110).aspx)
+        /// </remarks>
+        /// <returns>Handle of MainWindow</returns>
+        private IntPtr GetMainWindowHandle()
+        {
+            IntPtr mainWindowHandle = IntPtr.Zero;
+            WindowInteropHelper mainWindow;
+
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                mainWindow = new WindowInteropHelper(Application.Current.MainWindow);
+                if (mainWindow != null) mainWindowHandle = mainWindow.Handle;
+            });
+
+            return mainWindowHandle;
+        }
+
         private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
         {
             DisposeSimconnect();
@@ -211,6 +285,8 @@ namespace JeehellRMP
 
         private static void DisposeSimconnect()
         {
+            if (isConnectedToFs == false) return;
+
             SimData simdata = GetInstance();
             simdata.simconnect.Dispose();
             simdata.simconnect = null;
@@ -258,16 +334,14 @@ namespace JeehellRMP
 
         /// <summary>
         /// Handles incoming data from FS.
-        /// 
-        /// Fires DataUpdated event to notify subscribers.
-        /// 
-        /// Note: We're not using the "tagged data" feature of SimConnect so the whole structure is being sent from FS every time a member changes.
+        /// </summary>
+        /// <remarks>
+        /// We're not using the "tagged data" feature of SimConnect so the whole structure is being sent from FS every time a member changes.
         /// While tagged data are more economic for big sets, it is also quite more complicated to implement it so this will do as fine for this use case.
         /// 
         /// TODO: Implement tagged data (for the fun of it)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="data"></param>
+        /// </remarks>
+        /// <exception cref="InvalidCastException">When the received data structure is unknown</exception>
         private void Simconnect_OnRecvSimobjectData(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA data)
         {
             switch ((DataRequest)data.dwRequestID)
@@ -371,6 +445,7 @@ namespace JeehellRMP
             if (DisconnectedFromFs == null) return;
 
             DisconnectedFromFs();
+            AttemptFsConnection.RunWorkerAsync();
         }
     }
 }
