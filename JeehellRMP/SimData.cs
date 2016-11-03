@@ -186,7 +186,7 @@ namespace JeehellRMP
             
             try
             {
-                simconnect = new SimConnect("AimForFS", mainWindowHandle, WM_USER_SIMCONNECT, null, SimConnect.SIMCONNECT_OPEN_CONFIGINDEX_LOCAL);
+                simconnect = new SimConnect("JeehellRMP", mainWindowHandle, WM_USER_SIMCONNECT, null, SimConnect.SIMCONNECT_OPEN_CONFIGINDEX_LOCAL);
 
                 simconnect.OnRecvOpen += Simconnect_OnRecvOpen;
                 simconnect.OnRecvSimobjectData += Simconnect_OnRecvSimobjectData;
