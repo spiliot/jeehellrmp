@@ -135,5 +135,19 @@ namespace JeehellRMP
             }
             container.Stretch = Stretch.Fill;
         }
+
+        private void MenuItem_JhColors_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem JhColorsItem = sender as MenuItem;
+            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+
+            if (JhColorsItem.IsChecked)
+            {
+                mainWindow.Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0x8D, G = 0xAE, B = 0xBD });
+                return;
+            }
+            mainWindow.Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0x57, G = 0x69, B = 0x75 });
+        }
+
     }
 }

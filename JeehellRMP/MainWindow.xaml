@@ -16,10 +16,11 @@
             <MenuItem Header="Rotate Clockwise" Tag="CW" Click="MenuItem_Rotate_Click"></MenuItem>
             <MenuItem Header="Rotate Counterclockwise" Tag="CCW" Click="MenuItem_Rotate_Click"></MenuItem>
             <MenuItem Header="Keep proportions" IsCheckable="True" IsChecked="True" Click="MenuItem_Proportions_Click"></MenuItem>
+            <MenuItem Header="Jeehell colors" IsCheckable="True" IsChecked="False" Click="MenuItem_JhColors_Click"></MenuItem>
         </ContextMenu>
     </Window.Resources>
     <Viewbox Name="ContainerViewbox" RenderTransformOrigin="0.5,0.5">
-        <Canvas Height="87" Width="150" Background="#FF576975" DataContext="{Binding Source={StaticResource RmpSimData}}">
+        <Canvas Height="87" Width="150" DataContext="{Binding Source={StaticResource RmpSimData}}">
             <!--Frequency window markings-->
             <TextBlock Canvas.Left="15" Canvas.Top="1" Width="50" FontSize="5">ACTIVE</TextBlock>
             <TextBlock Canvas.Left="85" Canvas.Top="1" Width="50" FontSize="5">STBY/CRS</TextBlock>
