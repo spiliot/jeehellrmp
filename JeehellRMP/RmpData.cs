@@ -199,6 +199,7 @@ namespace JeehellRMP
 
         internal static void SetActiveMode(RmpMode modeToSet)
         {
+            if (SimData.isConnectedToFs == false) return;
             ActiveMode = modeToSet;
             OnActiveModeChanged();
         }
