@@ -22,6 +22,8 @@ namespace JeehellRMP
     /// </summary>
     public partial class MainWindow : Window
     {
+        static int WindowRotationAngle = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -64,7 +66,62 @@ namespace JeehellRMP
                     RmpData.SetActiveMode(RmpData.RmpMode.VHF2);
                     break;
             }
-
         }
+
+        private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // We don't want to do anything if right click was on a knob
+            FrameworkElement element = e.OriginalSource as FrameworkElement;
+            if (element.Name.EndsWith("Knob")) return;
+
+            MainWindow mainWindow = sender as MainWindow;
+            ContextMenu menu = this.FindResource("RightClickMenu") as ContextMenu;
+            menu.IsOpen = true;
+        }
+
+
+        private void MenuItem_Rotate_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = sender as MenuItem;
+            switch (item.Tag as string)
+            {
+                case "CW":
+                    RotateMainWindowCW();
+                    break;
+                case "CCW":
+                    RotateMainWindowCCW();
+                    break;
+            }
+        }
+
+        private void RotateMainWindowCCW()
+        {
+            if ((WindowRotationAngle -= 90) < 0) WindowRotationAngle += 360;
+            RotateMainWindow(WindowRotationAngle);
+        }
+
+        private void RotateMainWindowCW()
+        {
+            if ((WindowRotationAngle += 90) > 359) WindowRotationAngle -= 360;
+            RotateMainWindow(WindowRotationAngle);
+        }
+
+        private void RotateMainWindow(int Angle)
+        {
+            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+            RotateTransform myRotateTransform = new RotateTransform(WindowRotationAngle);
+
+            mainWindow.ContainerViewbox.LayoutTransform = myRotateTransform;
+
+            var titleHeight = SystemParameters.WindowCaptionHeight + SystemParameters.ResizeFrameHorizontalBorderHeight;
+            var horizontalBorderHeight = SystemParameters.ResizeFrameHorizontalBorderHeight;
+            var verticalBorderWidth = SystemParameters.ResizeFrameVerticalBorderWidth;
+
+            double currentInternaWindowlHeight = mainWindow.Height - titleHeight - horizontalBorderHeight;
+            double currentInternaWindowlWidth = mainWindow.Width - 2 * verticalBorderWidth;
+            mainWindow.Height = currentInternaWindowlWidth + titleHeight + horizontalBorderHeight;
+            mainWindow.Width = currentInternaWindowlHeight + 2 * verticalBorderWidth;
+        }
+
     }
 }
