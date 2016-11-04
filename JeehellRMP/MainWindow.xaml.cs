@@ -123,5 +123,17 @@ namespace JeehellRMP
             mainWindow.Width = currentInternaWindowlHeight + 2 * verticalBorderWidth;
         }
 
+        private void MenuItem_Proportions_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem proportionItem = sender as MenuItem;
+            Viewbox container = Application.Current.MainWindow.FindName("ContainerViewbox") as Viewbox;
+
+            if (proportionItem.IsChecked)
+            {
+                container.Stretch = Stretch.Uniform;
+                return;
+            }
+            container.Stretch = Stretch.Fill;
+        }
     }
 }
