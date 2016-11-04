@@ -149,5 +149,12 @@ namespace JeehellRMP
             mainWindow.Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0x57, G = 0x69, B = 0x75 });
         }
 
+        private void MenuItem_OnTop_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem onTopItem = sender as MenuItem;
+            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+
+            mainWindow.Topmost = onTopItem.IsChecked;
+        }
     }
 }

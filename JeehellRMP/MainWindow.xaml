@@ -13,6 +13,7 @@
     <Window.Resources>
         <local:RmpData x:Key="RmpSimData"/>
         <ContextMenu x:Key="RightClickMenu">
+            <MenuItem Header="Always on Top" IsCheckable="True" IsChecked="False" Click="MenuItem_OnTop_Click"></MenuItem>
             <MenuItem Header="Rotate Clockwise" Tag="CW" Click="MenuItem_Rotate_Click"></MenuItem>
             <MenuItem Header="Rotate Counterclockwise" Tag="CCW" Click="MenuItem_Rotate_Click"></MenuItem>
             <MenuItem Header="Keep proportions" IsCheckable="True" IsChecked="True" Click="MenuItem_Proportions_Click"></MenuItem>
