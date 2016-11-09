@@ -146,5 +146,9 @@ namespace JeehellRMP
             Properties.Settings.Default.Reload();
         }
 
+        private void MenuItem_Quit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.Close();
+        }
     }
 }

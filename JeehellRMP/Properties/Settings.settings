@@ -26,5 +26,8 @@
     <Setting Name="WindowLeft" Type="System.Double" Scope="User">
       <Value Profile="(Default)">NaN</Value>
     </Setting>
+    <Setting Name="IsWindowLocked" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

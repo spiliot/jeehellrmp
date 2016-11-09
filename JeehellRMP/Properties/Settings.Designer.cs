@@ -118,5 +118,17 @@ namespace JeehellRMP.Properties {
                 this["WindowLeft"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsWindowLocked {
+            get {
+                return ((bool)(this["IsWindowLocked"]));
+            }
+            set {
+                this["IsWindowLocked"] = value;
+            }
+        }
     }
 }

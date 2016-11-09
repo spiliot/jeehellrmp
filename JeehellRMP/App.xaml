@@ -13,8 +13,20 @@
             <Setter Property="Width" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowWidth, Mode=TwoWay}" />
             <Setter Property="MinHeight" Value="125" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsWindowLocked}" Value="True">
+                    <Setter Property="WindowStyle" Value="None" />
+                    <Setter Property="ResizeMode" Value="NoResize" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsBackgroundColorJeehell}" Value="True">
                     <Setter Property="Background" Value="#FF8DAEBD" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type MenuItem}" x:Key="MenuQuitStyle">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsWindowLocked}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>

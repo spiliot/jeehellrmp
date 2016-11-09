@@ -16,10 +16,12 @@
             <MenuItem Header="Always on Top" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsWindowOnTop}"/>
             <MenuItem Header="Rotate Clockwise" Tag="CW" Click="MenuItem_Rotate_Click"/>
             <MenuItem Header="Rotate Counterclockwise" Tag="CCW" Click="MenuItem_Rotate_Click"/>
+            <MenuItem Header="Lock Position" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsWindowLocked}"/>
             <MenuItem Header="Keep proportions" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsKeepProportionsSet}"/>
             <MenuItem Header="Jeehell colors" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsBackgroundColorJeehell}"/>
             <MenuItem Header="Save Settings" Click="MenuItem_Save_Click"/>
             <MenuItem Header="Reset Settings" Click="MenuItem_Reset_Click"/>
+            <MenuItem Header="Quit" Click="MenuItem_Quit_Click" Style="{DynamicResource MenuQuitStyle}"/>
         </ContextMenu>
     </Window.Resources>
     <Viewbox Name="ContainerViewbox" Style="{DynamicResource ContainerStyle}">
