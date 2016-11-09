@@ -11,7 +11,6 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -141,12 +140,7 @@ namespace JeehellRMP
             MenuItem JhColorsItem = sender as MenuItem;
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
 
-            if (JhColorsItem.IsChecked)
-            {
-                mainWindow.Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0x8D, G = 0xAE, B = 0xBD });
-                return;
-            }
-            mainWindow.Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0x57, G = 0x69, B = 0x75 });
+            Properties.Settings.Default.IsBackgroundColorJeehell = JhColorsItem.IsChecked;
         }
 
         private void MenuItem_OnTop_Click(object sender, RoutedEventArgs e)

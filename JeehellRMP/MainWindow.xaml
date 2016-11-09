@@ -6,9 +6,7 @@
         xmlns:local="clr-namespace:JeehellRMP"
         mc:Ignorable="d"
         Title="Jeehell RMP" 
-        Height="327" Width="500"
-        MinHeight="125"
-        Background="#FF576975"
+        Style="{DynamicResource MainWindowStyle}" 
         MouseRightButtonDown="Window_MouseRightButtonDown" >
     <Window.Resources>
         <local:RmpData x:Key="RmpSimData"/>
