@@ -122,7 +122,6 @@ namespace JeehellRMP
 
         private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
         {
-
             Properties.Settings.Default.Save();
         }
 
@@ -140,5 +139,12 @@ namespace JeehellRMP
             mainWindow.Top = 0;
             mainWindow.Left = 0;
         }
+
+        private void MenuItem_Reset_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.Reset();
+            Properties.Settings.Default.Reload();
+        }
+
     }
 }
