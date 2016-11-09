@@ -7,6 +7,8 @@
     <Application.Resources>
         <Style TargetType="{x:Type Window}" x:Key="MainWindowStyle">
             <Setter Property="Background" Value="#FF576975" />
+            <Setter Property="Top" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowTop, Mode=TwoWay}" />
+            <Setter Property="Left" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowLeft, Mode=TwoWay}" />
             <Setter Property="Height" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowHeight, Mode=TwoWay}" />
             <Setter Property="Width" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowWidth, Mode=TwoWay}" />
             <Setter Property="MinHeight" Value="125" />

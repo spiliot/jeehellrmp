@@ -20,5 +20,11 @@
     <Setting Name="WindowWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">500</Value>
     </Setting>
+    <Setting Name="WindowTop" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">NaN</Value>
+    </Setting>
+    <Setting Name="WindowLeft" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">NaN</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -125,5 +125,20 @@ namespace JeehellRMP
 
             Properties.Settings.Default.Save();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            ResetWindowPositionIfOutOfView();
+        }
+
+        private void ResetWindowPositionIfOutOfView()
+        {
+            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+
+            if (mainWindow.Top + mainWindow.Height / 2 < SystemParameters.VirtualScreenHeight) return;
+            if (mainWindow.Left + mainWindow.Width / 2 > SystemParameters.VirtualScreenWidth) return;
+            mainWindow.Top = 0;
+            mainWindow.Left = 0;
+        }
     }
 }
