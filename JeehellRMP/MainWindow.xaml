@@ -11,25 +11,25 @@
     <Window.Resources>
         <local:RmpData x:Key="RmpSimData"/>
         <ContextMenu x:Key="RightClickMenu">
-            <MenuItem Header="Always on Top" IsCheckable="True" IsChecked="False" Click="MenuItem_OnTop_Click"></MenuItem>
-            <MenuItem Header="Rotate Clockwise" Tag="CW" Click="MenuItem_Rotate_Click"></MenuItem>
-            <MenuItem Header="Rotate Counterclockwise" Tag="CCW" Click="MenuItem_Rotate_Click"></MenuItem>
-            <MenuItem Header="Keep proportions" IsCheckable="True" IsChecked="True" Click="MenuItem_Proportions_Click"></MenuItem>
-            <MenuItem Header="Jeehell colors" IsCheckable="True" IsChecked="False" Click="MenuItem_JhColors_Click"></MenuItem>
+            <MenuItem Header="Always on Top" IsCheckable="True" IsChecked="False" Click="MenuItem_OnTop_Click"/>
+            <MenuItem Header="Rotate Clockwise" Tag="CW" Click="MenuItem_Rotate_Click"/>
+            <MenuItem Header="Rotate Counterclockwise" Tag="CCW" Click="MenuItem_Rotate_Click"/>
+            <MenuItem Header="Keep proportions" IsCheckable="True" IsChecked="True" Click="MenuItem_Proportions_Click"/>
+            <MenuItem Header="Jeehell colors" IsCheckable="True" IsChecked="False" Click="MenuItem_JhColors_Click"/>
         </ContextMenu>
     </Window.Resources>
     <Viewbox Name="ContainerViewbox" RenderTransformOrigin="0.5,0.5">
         <Canvas Height="87" Width="150" DataContext="{Binding Source={StaticResource RmpSimData}}">
             <!--Frequency window markings-->
-            <TextBlock Canvas.Left="15" Canvas.Top="1" Width="50" FontSize="5">ACTIVE</TextBlock>
-            <TextBlock Canvas.Left="85" Canvas.Top="1" Width="50" FontSize="5">STBY/CRS</TextBlock>
+            <TextBlock Canvas.Left="15" Canvas.Top="1" Width="50" Style="{DynamicResource RmpMarkingText}">ACTIVE</TextBlock>
+            <TextBlock Canvas.Left="85" Canvas.Top="1" Width="50" Style="{DynamicResource RmpMarkingText}">STBY/CRS</TextBlock>
             <!--STBY NAV markings-->
             <Path Data="M15,66.5 L55,66.5" Stroke="White" StrokeEndLineCap="Round" StrokeStartLineCap="Round"/>
             <Path Data="M85,66.5 L118,66.5 L118,70" Stroke="White" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeLineJoin="Round"/>
-            <TextBlock Canvas.Left="59" Canvas.Top="63" FontSize="5">STBY NAV</TextBlock>
+            <TextBlock Canvas.Left="59" Canvas.Top="63" Style="{DynamicResource RmpMarkingText}">STBY NAV</TextBlock>
             <!--On/OFF switch markings-->
-            <TextBlock Canvas.Left="127" Canvas.Top="63" Width="10" FontSize="5" Cursor="Hand">ON</TextBlock>
-            <TextBlock Canvas.Left="127" Canvas.Top="78" Width="10" FontSize="5" Cursor="Hand">OFF</TextBlock>
+            <TextBlock Canvas.Left="127" Canvas.Top="63" Width="10" Style="{DynamicResource RmpMarkingText}" Cursor="Hand">ON</TextBlock>
+            <TextBlock Canvas.Left="127" Canvas.Top="78" Width="10" Style="{DynamicResource RmpMarkingText}" Cursor="Hand">OFF</TextBlock>
             <Ellipse Width="8" Height="8" Canvas.Left="128" Canvas.Top="70" Stroke="White"/>
             <Ellipse Width="6" Height="6" Canvas.Left="129" Canvas.Top="71" Fill="Black"/>
 
