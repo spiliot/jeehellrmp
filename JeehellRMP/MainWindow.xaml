@@ -4,21 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JeehellRMP"
+        xmlns:properties="clr-namespace:JeehellRMP.Properties"
         mc:Ignorable="d"
         Title="Jeehell RMP" 
         Style="{DynamicResource MainWindowStyle}" 
+        Topmost="{Binding Source={x:Static properties:Settings.Default}, Path=IsWindowOnTop}"
         MouseRightButtonDown="Window_MouseRightButtonDown" >
     <Window.Resources>
         <local:RmpData x:Key="RmpSimData"/>
         <ContextMenu x:Key="RightClickMenu">
-            <MenuItem Header="Always on Top" IsCheckable="True" IsChecked="False" Click="MenuItem_OnTop_Click"/>
+            <MenuItem Header="Always on Top" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsWindowOnTop}"/>
             <MenuItem Header="Rotate Clockwise" Tag="CW" Click="MenuItem_Rotate_Click"/>
             <MenuItem Header="Rotate Counterclockwise" Tag="CCW" Click="MenuItem_Rotate_Click"/>
-            <MenuItem Header="Keep proportions" IsCheckable="True" IsChecked="True" Click="MenuItem_Proportions_Click"/>
-            <MenuItem Header="Jeehell colors" IsCheckable="True" IsChecked="False" Click="MenuItem_JhColors_Click"/>
+            <MenuItem Header="Keep proportions" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsKeepProportionsSet}"/>
+            <MenuItem Header="Jeehell colors" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=IsBackgroundColorJeehell}"/>
+            <MenuItem Header="Save Settings" Click="MenuItem_Save_Click"/>
         </ContextMenu>
     </Window.Resources>
-    <Viewbox Name="ContainerViewbox" RenderTransformOrigin="0.5,0.5">
+    <Viewbox Name="ContainerViewbox" Style="{DynamicResource ContainerStyle}">
         <Canvas Height="87" Width="150" DataContext="{Binding Source={StaticResource RmpSimData}}">
             <!--Frequency window markings-->
             <TextBlock Canvas.Left="15" Canvas.Top="1" Width="50" Style="{DynamicResource RmpMarkingText}">ACTIVE</TextBlock>

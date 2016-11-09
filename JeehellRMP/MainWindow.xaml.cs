@@ -21,8 +21,6 @@ namespace JeehellRMP
     /// </summary>
     public partial class MainWindow : Window
     {
-        static int WindowRotationAngle = 0;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -78,7 +76,6 @@ namespace JeehellRMP
             menu.IsOpen = true;
         }
 
-
         private void MenuItem_Rotate_Click(object sender, RoutedEventArgs e)
         {
             MenuItem item = sender as MenuItem;
@@ -95,22 +92,23 @@ namespace JeehellRMP
 
         private void RotateMainWindowCCW()
         {
+            int WindowRotationAngle = Properties.Settings.Default.WindowRotationAngle;
             if ((WindowRotationAngle -= 90) < 0) WindowRotationAngle += 360;
-            RotateMainWindow(WindowRotationAngle);
+            Properties.Settings.Default.WindowRotationAngle = WindowRotationAngle;
+            RotateMainWindow();
         }
 
         private void RotateMainWindowCW()
         {
+            int WindowRotationAngle = Properties.Settings.Default.WindowRotationAngle;
             if ((WindowRotationAngle += 90) > 359) WindowRotationAngle -= 360;
-            RotateMainWindow(WindowRotationAngle);
+            Properties.Settings.Default.WindowRotationAngle = WindowRotationAngle;
+            RotateMainWindow();
         }
 
-        private void RotateMainWindow(int Angle)
+        private void RotateMainWindow()
         {
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-            RotateTransform myRotateTransform = new RotateTransform(WindowRotationAngle);
-
-            mainWindow.ContainerViewbox.LayoutTransform = myRotateTransform;
 
             var titleHeight = SystemParameters.WindowCaptionHeight + SystemParameters.ResizeFrameHorizontalBorderHeight;
             var horizontalBorderHeight = SystemParameters.ResizeFrameHorizontalBorderHeight;
@@ -122,33 +120,14 @@ namespace JeehellRMP
             mainWindow.Width = currentInternaWindowlHeight + 2 * verticalBorderWidth;
         }
 
-        private void MenuItem_Proportions_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem proportionItem = sender as MenuItem;
-            Viewbox container = Application.Current.MainWindow.FindName("ContainerViewbox") as Viewbox;
-
-            if (proportionItem.IsChecked)
-            {
-                container.Stretch = Stretch.Uniform;
-                return;
-            }
-            container.Stretch = Stretch.Fill;
-        }
-
-        private void MenuItem_JhColors_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem JhColorsItem = sender as MenuItem;
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
 
-            Properties.Settings.Default.IsBackgroundColorJeehell = JhColorsItem.IsChecked;
-        }
+            Properties.Settings.Default.WindowWidth = mainWindow.Width;
+            Properties.Settings.Default.WindowHeight = mainWindow.Height;
 
-        private void MenuItem_OnTop_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem onTopItem = sender as MenuItem;
-            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-
-            mainWindow.Topmost = onTopItem.IsChecked;
+            Properties.Settings.Default.Save();
         }
     }
 }
