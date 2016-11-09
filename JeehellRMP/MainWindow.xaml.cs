@@ -122,10 +122,6 @@ namespace JeehellRMP
 
         private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-
-            Properties.Settings.Default.WindowWidth = mainWindow.Width;
-            Properties.Settings.Default.WindowHeight = mainWindow.Height;
 
             Properties.Settings.Default.Save();
         }

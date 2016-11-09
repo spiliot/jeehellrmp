@@ -7,8 +7,8 @@
     <Application.Resources>
         <Style TargetType="{x:Type Window}" x:Key="MainWindowStyle">
             <Setter Property="Background" Value="#FF576975" />
-            <Setter Property="Height" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowHeight}" />
-            <Setter Property="Width" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowWidth}" />
+            <Setter Property="Height" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowHeight, Mode=TwoWay}" />
+            <Setter Property="Width" Value="{Binding Source={x:Static properties:Settings.Default}, Path=WindowWidth, Mode=TwoWay}" />
             <Setter Property="MinHeight" Value="125" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=IsBackgroundColorJeehell}" Value="True">
